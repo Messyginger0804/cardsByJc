@@ -1,17 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, Text, TouchableOpacity, Alert } from "react-native";
 import Animated, {
   useAnimatedGestureHandler,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
-  runOnJS,
 } from "react-native-reanimated";
 import { PanGestureHandler } from "react-native-gesture-handler";
+import Card from "./Card";
 
-const CardSwiper = () => {
-  const [cards, setCards] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
+const CardSwiper = ({ cards, currentIndex, setCurrentIndex, addCard, deleteCurrentCard }) => {
   const translateX = useSharedValue(0);
 
   const gestureHandler = useAnimatedGestureHandler({
@@ -21,10 +19,10 @@ const CardSwiper = () => {
     onEnd: () => {
       if (translateX.value > 50 && currentIndex > 0) {
         translateX.value = withSpring(0);
-        runOnJS(setCurrentIndex)(currentIndex - 1);
+        setCurrentIndex((prevIndex) => prevIndex - 1);
       } else if (translateX.value < -50 && currentIndex < cards.length - 1) {
         translateX.value = withSpring(0);
-        runOnJS(setCurrentIndex)(currentIndex + 1);
+        setCurrentIndex((prevIndex) => prevIndex + 1);
       } else {
         translateX.value = withSpring(0);
       }
@@ -35,60 +33,42 @@ const CardSwiper = () => {
     transform: [{ translateX: translateX.value }],
   }));
 
-  const addCard = () => {
-    const newCard = { id: Date.now(), content: `Card-${Date.now()}` };
-    setCards((prev) => [...prev, newCard]);
-  };
-
-  const deleteCurrentCard = () => {
-    if (cards.length === 0) {
-      Alert.alert("Error", "No cards to delete!");
-      return;
-    }
-
-    const updatedCards = cards.filter((_, index) => index !== currentIndex);
-    setCards(updatedCards);
-    setCurrentIndex((prevIndex) => Math.max(0, prevIndex - 1));
-  };
-
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#111" }}>
-      {/* Top Buttons */}
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      {/* Card Manager Buttons */}
       <View style={{ flexDirection: "row", marginBottom: 20 }}>
+        {/* Add Card Button */}
         <TouchableOpacity
-          style={{ backgroundColor: "#1e90ff", padding: 10, borderRadius: 5, marginRight: 10 }}
+          style={{
+            backgroundColor: "#1e90ff",
+            padding: 10,
+            borderRadius: 5,
+            marginRight: 10,
+          }}
           onPress={addCard}
         >
           <Text style={{ color: "#fff", fontWeight: "bold" }}>Add Card</Text>
         </TouchableOpacity>
+
+        {/* Delete Card Button */}
         <TouchableOpacity
-          style={{ backgroundColor: "#ff4500", padding: 10, borderRadius: 5 }}
+          style={{
+            backgroundColor: "#ff4500",
+            padding: 10,
+            borderRadius: 5,
+          }}
           onPress={deleteCurrentCard}
         >
           <Text style={{ color: "#fff", fontWeight: "bold" }}>Delete Card</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Cards */}
+      {/* Display Current Card */}
       {cards.length > 0 ? (
         <PanGestureHandler onGestureEvent={gestureHandler}>
-          <Animated.View
-            style={[
-              {
-                width: 200,
-                height: 100,
-                backgroundColor: "#1e90ff",
-                borderRadius: 10,
-                justifyContent: "center",
-                alignItems: "center",
-              },
-              animatedStyle,
-            ]}
-          >
-            <Text style={{ color: "#fff", fontWeight: "bold" }}>
-              {cards[currentIndex]?.content || "No Card Selected"}
-            </Text>
-          </Animated.View>
+          <View>
+            <Card content={cards[currentIndex]?.content} animatedStyle={animatedStyle} />
+          </View>
         </PanGestureHandler>
       ) : (
         <Text style={{ color: "#fff", fontSize: 16 }}>No cards available. Add one!</Text>

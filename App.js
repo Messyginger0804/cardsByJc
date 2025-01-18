@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 import CardSwiper from "./components/CardSwiper";
-// import CardManager from "./components/CardManager";
 
 const App = () => {
   const [cards, setCards] = useState([]);
@@ -10,29 +9,25 @@ const App = () => {
   const addCard = () => {
     const newCard = { id: Date.now(), content: `Card-${Date.now()}` };
     setCards((prev) => [...prev, newCard]);
-    setCurrentIndex(cards.length);
+    setCurrentIndex(cards.length); // Focus on the newly added card
   };
 
   const deleteCurrentCard = () => {
-    const updatedCards = cards.filter((_, index) => index !== currentIndex);
-    setCards(updatedCards);
-    setCurrentIndex((prevIndex) => Math.max(0, prevIndex - 1));
+    if (cards.length > 0) {
+      const updatedCards = cards.filter((_, index) => index !== currentIndex);
+      setCards(updatedCards);
+      setCurrentIndex((prevIndex) => Math.max(0, prevIndex - 1));
+    }
   };
 
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#111",
-      }}
-    >
-      {/* <CardManager addCard={addCard} deleteCurrentCard={deleteCurrentCard} /> */}
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#111" }}>
       <CardSwiper
         cards={cards}
         currentIndex={currentIndex}
         setCurrentIndex={setCurrentIndex}
+        addCard={addCard}
+        deleteCurrentCard={deleteCurrentCard}
       />
     </View>
   );

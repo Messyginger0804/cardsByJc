@@ -3,18 +3,30 @@ import { View, TouchableOpacity, Text } from "react-native";
 
 const CardManager = ({ addCard, deleteCurrentCard }) => {
   return (
-    <View className="flex-row mb-5">
+    <View style={{ flexDirection: "row", marginBottom: 20, marginTop: 10 }}>
+      {/* Add Card Button */}
       <TouchableOpacity
-        className="bg-blue-500 px-4 py-2 rounded-md ml-3"
+        style={{
+          backgroundColor: "#1e90ff",
+          padding: 10,
+          borderRadius: 5,
+          marginRight: 10,
+        }}
         onPress={addCard}
       >
-        <Text className="text-white font-bold">Add Card</Text>
+        <Text style={{ color: "#fff", fontWeight: "bold" }}>Add Card</Text>
       </TouchableOpacity>
+
+      {/* Delete Card Button */}
       <TouchableOpacity
-        className="bg-red-500 px-4 py-2 rounded-md ml-3"
+        style={{
+          backgroundColor: "#ff4500",
+          padding: 10,
+          borderRadius: 5,
+        }}
         onPress={deleteCurrentCard}
       >
-        <Text className="text-white font-bold">Delete Card  1212121</Text>
+        <Text style={{ color: "#fff", fontWeight: "bold" }}>Delete Card</Text>
       </TouchableOpacity>
     </View>
   );
